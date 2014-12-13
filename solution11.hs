@@ -25,7 +25,6 @@ grid =
 type Direction = (Int, Int)
 type Coordinate = (Int, Int)
 
-
 east  :: Direction
 south :: Direction
 southEast :: Direction
