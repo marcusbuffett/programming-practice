@@ -1,7 +1,31 @@
 module Main where
 
-data TriangleTree a = Nil | Node a (TriangleTree a) (TriangleTree a) deriving (Show)
 type Coordinate = (Int, Int)
+type Row = [Int]
+
+numAtCoord :: Coordinate -> Int
+numAtCoord coord = triangle !! snd coord !! fst coord
+
+maxChain :: [Row] -> Int
+maxChain tri
+    | length tri == 1 = head $ head tri
+    | otherwise        = maxChain newtri
+    where
+    rows = length tri
+    lastRow = tri !! (rows-1)
+    secondLastRow = tri !! (rows-2)
+    rest = take (rows-2) tri
+    lastRowGrouped = groupings 2 lastRow
+    maxes = map maximum lastRowGrouped
+    newtri = rest ++ [zipWith (+) maxes secondLastRow]
+    
+groupings :: Int -> [a] -> [[a]]
+groupings n list 
+    | length list >= n = take n list : groupings n (drop 1 list)
+    | otherwise        = []
+
+main :: IO ()
+main = print $ maxChain triangle
 
 triangle :: [[Int]]
 triangle =
@@ -20,25 +44,3 @@ triangle =
     [91 , 71 , 52 , 38 , 17 , 14 , 91 , 43 , 58 , 50 , 27 , 29 , 48],
     [63 , 66 , 04 , 68 , 89 , 53 , 67 , 30 , 73 , 16 , 69 , 87 , 40 , 31],
     [04 , 62 , 98 , 27 , 23 , 09 , 70 , 98 , 73 , 93 , 38 , 53 , 60 , 04 , 23]]
-
-numAtCoord :: Coordinate -> Int
-numAtCoord coord = triangle !! snd coord !! fst coord
-
-tree :: TriangleTree Int
-tree = generateTree (0,0)
-    where
-    generateTree coord
-        | snd coord < depth = Node (numAtCoord coord) (generateTree lowerLeft) (generateTree lowerRight)
-        | otherwise = Nil
-        where
-        lowerLeft = (fst coord, snd coord + 1)
-        lowerRight = (fst coord + 1, snd coord + 1)
-    depth = length triangle
-
-maximumChain :: TriangleTree Int -> Int
-maximumChain (Node num child1 child2)  = num + max (maximumChain child1) (maximumChain child2)
-maximumChain Nil = 0
-
-main :: IO ()
-main = print $ maximumChain tree
-
