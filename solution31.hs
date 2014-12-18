@@ -10,7 +10,7 @@ ways :: Int -> [Int] -> [[Int]]
 ways 0 _ = [[]]
 ways _ [] = []
 ways goal cs@(c:rest)
-    | c <= goal = map (c:) (ways newGoal cs) ++ ways goal rest
+    | c <= goal = [c:waysRemaining | waysRemaining <- ways newGoal cs] ++ ways goal rest
     | otherwise = ways goal rest
     where newGoal = goal-c
 
