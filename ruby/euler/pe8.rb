@@ -9,4 +9,4 @@ def groupings(arr, n)
 end
 
 
-puts groupings(digits, 13).map{|arr| arr.inject(1){|sum, x| sum * x}}.max()
+puts groupings(digits, 13).map{|arr| arr.inject(1){|prod, x| prod * x}}.max()
